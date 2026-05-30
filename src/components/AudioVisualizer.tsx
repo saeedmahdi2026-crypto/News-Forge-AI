@@ -36,23 +36,25 @@ export const AudioVisualizer: React.FC<AudioVisualizerProps> = ({
           return;
         }
 
-        // Initialize AudioContext
-        if (!audioContextRef.current) {
-          audioContextRef.current = new AudioContextClass();
+        // Initialize or retrieve global AudioContext safely to prevent mismatch of context when component unmounts/remounts
+        if (!win._globalAudioContext) {
+          win._globalAudioContext = new AudioContextClass();
         }
-        const ctx = audioContextRef.current;
+        audioContextRef.current = win._globalAudioContext;
+        const ctx = win._globalAudioContext;
 
-        // Create or reuse AnalyserNode
-        if (!analyserRef.current) {
+        // Initialize or retrieve global AnalyserNode for this global context
+        if (!win._globalAnalyser) {
           const fftSize = 128;
           const analyser = ctx.createAnalyser();
           analyser.fftSize = fftSize;
           analyser.smoothingTimeConstant = 0.8;
-          analyserRef.current = analyser;
+          win._globalAnalyser = analyser;
         }
-        const analyser = analyserRef.current;
+        analyserRef.current = win._globalAnalyser;
+        const analyser = win._globalAnalyser;
 
-        // Reuse or create source node
+        // Reuse or create source node matching the global context
         let source = win._connectedAudioSources.get(audioElement);
         if (!source) {
           source = ctx.createMediaElementSource(audioElement);
