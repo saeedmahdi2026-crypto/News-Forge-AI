@@ -1,0 +1,8 @@
+{
+  "name": "Remix: NewsForge",
+  "description": "AI-powered Bengali news headline generator from audio and video files.",
+  "requestFramePermissions": [],
+  "majorCapabilities": [
+    "MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"
+  ]
+}
